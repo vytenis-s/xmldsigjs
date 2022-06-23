@@ -4,7 +4,7 @@ import { ISignatureAlgorithm } from "./algorithm";
 import * as Alg from "./algorithms";
 import { RsaPssBase } from "./algorithms";
 import { CryptoConfig } from "./crypto_config";
-import { KeyInfo, Reference, References, Signature, SignedInfo, Transform as XmlTransform, Transforms as XmlTransforms, XmlDsigC14NWithCommentsTransform, XmlDsigExcC14NWithCommentsTransform } from "./xml";
+import { KeyInfo, Reference, References, Signature, SignedInfo, Transform as XmlTransform, Transforms as XmlTransforms, XmlDsigC14NWithCommentsTransform, XmlDsigExcC14NTransform, XmlDsigExcC14NWithCommentsTransform } from "./xml";
 import { KeyInfoX509Data, KeyValue } from "./xml/key_infos";
 import * as KeyInfos from "./xml/key_infos";
 import * as Transforms from "./xml/transforms";
@@ -462,6 +462,12 @@ export class SignedXml implements XmlCore.IXmlSerializable {
         }
 
         const node = xml.cloneNode(true) as Element;
+        if(this.XmlSignature.SignedInfo.CanonicalizationMethod.GetChildren('InclusiveNamespaces','http://www.w3.org/2001/10/xml-exc-c14n#').length === 1){
+            const inclNamespaces = this.XmlSignature.SignedInfo.CanonicalizationMethod.GetChildren('InclusiveNamespaces','http://www.w3.org/2001/10/xml-exc-c14n#')[0];
+            if(t.constructor.name === 'XmlDsigExcC14NTransform'){
+                 (t as XmlDsigExcC14NTransform).setInclusiveNamespacesElement(inclNamespaces as HTMLElement);
+            }
+        }
 
         //#region Get root namespaces
         // Get xmlns from SignedInfo

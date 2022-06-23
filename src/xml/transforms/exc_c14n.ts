@@ -50,7 +50,7 @@ export class XmlDsigExcC14NTransform extends Transform {
         return this.xmlCanonicalizer.Canonicalize(this.innerXml);
     }
 
-    private setInclusiveNamespacesElement(element: HTMLElement) {
+    public setInclusiveNamespacesElement(element: HTMLElement) {
         const prefixList = element.getAttribute('PrefixList');
         if (prefixList && prefixList.length > 0) {
             this.xmlCanonicalizer.InclusiveNamespacesPrefixList = prefixList;
